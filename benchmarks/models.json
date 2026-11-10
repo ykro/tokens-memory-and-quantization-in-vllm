@@ -1,0 +1,94 @@
+{
+  "checked": "2026-11-10",
+  "source": "https://huggingface.co/api/models/<id> (safetensors.total) y https://huggingface.co/api/models/<id>/tree/main (tamaño de los .safetensors)",
+  "note": "params_total cuenta todo lo que trae el archivo: capas de texto, embeddings y, en Gemma 4 y Qwen 3.5, los encoders de imagen y audio. En los checkpoints int4 (I32) cada número de 32 bits empaca varios pesos de 4 bits, así que para memoria hay que leer safetensors_bytes.",
+  "models": [
+    {
+      "id": "google/gemma-4-E2B-it",
+      "family": "google",
+      "quantized": false,
+      "params_total": 5123178051,
+      "params_by_dtype": {
+        "BF16": 5123178051
+      },
+      "safetensors_bytes": 10246621918,
+      "license": "apache-2.0",
+      "created_at": "2026-03-02T19:58:09.000Z"
+    },
+    {
+      "id": "google/gemma-4-E4B-it",
+      "family": "google",
+      "quantized": false,
+      "params_total": 7996156490,
+      "params_by_dtype": {
+        "BF16": 7996156490
+      },
+      "safetensors_bytes": 15992595884,
+      "license": "apache-2.0",
+      "created_at": "2026-03-02T19:57:40.000Z"
+    },
+    {
+      "id": "google/gemma-4-12B-it",
+      "family": "google",
+      "quantized": false,
+      "params_total": 11959730224,
+      "params_by_dtype": {
+        "BF16": 11959730224
+      },
+      "safetensors_bytes": 23919549408,
+      "license": "apache-2.0",
+      "created_at": "2026-05-23T01:17:15.000Z"
+    },
+    {
+      "id": "google/gemma-4-31B-it",
+      "family": "google",
+      "quantized": false,
+      "params_total": 31273088876,
+      "params_by_dtype": {
+        "BF16": 31273088876
+      },
+      "safetensors_bytes": 62546338248,
+      "license": "apache-2.0",
+      "created_at": "2026-03-11T18:22:36.000Z"
+    },
+    {
+      "id": "Qwen/Qwen3.5-4B",
+      "family": "qwen",
+      "quantized": false,
+      "params_total": 4659865088,
+      "params_by_dtype": {
+        "BF16": 4659861248,
+        "F32": 3840
+      },
+      "safetensors_bytes": 9319828096,
+      "license": "apache-2.0",
+      "created_at": "2026-02-27T14:45:03.000Z"
+    },
+    {
+      "id": "google/gemma-4-E4B-it-qat-w4a16-ct",
+      "family": "google",
+      "quantized": true,
+      "params_total": 8612189514,
+      "params_by_dtype": {
+        "I32": 3972792320,
+        "BF16": 4639397194
+      },
+      "safetensors_bytes": 11513861828,
+      "license": "apache-2.0",
+      "created_at": "2026-06-04T22:28:22.000Z"
+    },
+    {
+      "id": "google/gemma-4-12B-it-qat-w4a16-ct",
+      "family": "google",
+      "quantized": true,
+      "params_total": 12966363184,
+      "params_by_dtype": {
+        "I32": 10899947520,
+        "BF16": 2066415664
+      },
+      "safetensors_bytes": 10264229896,
+      "license": "apache-2.0",
+      "created_at": "2026-06-05T02:50:55.000Z"
+    }
+  ]
+}
