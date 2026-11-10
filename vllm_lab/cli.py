@@ -24,6 +24,9 @@ def parser(description: str, quant: bool = False, qwen: bool = False) -> argpars
     if quant:
         p.add_argument("--quant-base-url", default=QUANT_BASE_URL,
                        help="quantized Gemma server, /v1 URL")
+        p.add_argument("--extra-base-url", action="append", default=[],
+                       help="optional more servers to line up in experiment 05 (E2B, 12B int4), "
+                            "repeat the flag, /v1 URL")
     if qwen:
         p.add_argument("--qwen-base-url", default=QWEN_BASE_URL,
                        help="optional Qwen server for the tokenizer comparison, /v1 URL")

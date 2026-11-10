@@ -68,7 +68,7 @@ def main() -> int:
         "02_kv_cache_per_token": mods["02_kv_cache_per_token"].run(base_url),
         "03_max_model_len_tradeoff": mods["03_max_model_len_tradeoff"].run(base_url),
         "04_tokenizer_comparison": mods["04_tokenizer_comparison"].run(base_url, qwen_url),
-        "05_quantization_quality": mods["05_quantization_quality"].run(base_url, quant_url),
+        "05_quantization_quality": mods["05_quantization_quality"].run(base_url, quant_url, args.extra_base_url),
     }
     r1, r2, r3, r4, r5 = (res[n] for n in EXPERIMENTS)
     if args.verbose:

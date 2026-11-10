@@ -16,6 +16,9 @@ your own data.
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from vllm_lab import (
     QUANT_BASE_URL,
     chat_once,
@@ -50,9 +53,12 @@ def ask_all(base_url: str) -> dict:
     }
 
 
-def run(base_url: str, quant_base_url: str = QUANT_BASE_URL) -> dict:
+def run(base_url: str, quant_base_url: str = QUANT_BASE_URL,
+        extra_base_urls: list[str] | None = None) -> dict:
     bf16 = ask_all(base_url)
     quant = ask_all(quant_base_url)
+    # Optional extra servers (a smaller model, a bigger int4 one) lined up on the same quiz.
+    extras = [ask_all(url) for url in extra_base_urls or []]
     saved = None
     if bf16["weights_file_gib"] and quant["weights_file_gib"]:
         saved = round(bf16["weights_file_gib"] - quant["weights_file_gib"], 2)
@@ -62,6 +68,8 @@ def run(base_url: str, quant_base_url: str = QUANT_BASE_URL) -> dict:
     return {
         "bf16": bf16,
         "quantized": quant,
+        "extras": [{k: e[k] for k in ("weights", "accuracy", "weights_file_gib",
+                                      "kv_capacity_tokens")} for e in extras],
         "weights_saved_gib": saved,
         "kv_capacity_gain_x": kv_x,
         "accuracy_drop": round(bf16["accuracy"] - quant["accuracy"], 2),
@@ -73,13 +81,25 @@ def main() -> None:
     args = cli.parse(__doc__.splitlines()[0], quant=True)
     base = cli.resolve(args)
     quant = cli.server(args, "gemma-qat", args.quant_base_url)
-    r = run(base, quant)
+    r = run(base, quant, args.extra_base_url)
     print(f"\n{'#':>2} {'bf16':20} {'int4 (qat)':20} question")
     for i, (a, b) in enumerate(zip(r["bf16"]["answers"], r["quantized"]["answers"],
                                    strict=True), 1):
         print(f"{i:>2} {('ok  ' if a['ok'] else 'MISS') + ' ' + a['answer'][:14]:20} "
               f"{('ok  ' if b['ok'] else 'MISS') + ' ' + b['answer'][:14]:20} "
               f"{a['question'][:60]}")
+    # Every run adds the servers it asked to benchmarks/memory_ladder.json (merged by weights),
+    # because the L4 quota rarely allows every server up at the same time.
+    path = Path(__file__).resolve().parent.parent / "benchmarks" / "memory_ladder.json"
+    ladder = json.loads(path.read_text()) if path.exists() and not args.mock else {}
+    if not args.mock:
+        for e in [r["bf16"], r["quantized"], *r["extras"]]:
+            ladder[e["weights"]] = {k: e[k] for k in ("weights", "accuracy", "weights_file_gib",
+                                                      "kv_capacity_tokens")}
+        path.write_text(json.dumps(ladder, indent=2, ensure_ascii=False) + "\n")
+    for e in r["extras"]:
+        print(f"\nextra: {e['weights']}  accuracy {e['accuracy']:.0%}  "
+              f"weights {e['weights_file_gib']} GiB  KV {e['kv_capacity_tokens']} tokens")
     cli.show("Memory vs quality", {k: r[k] for k in ("weights_saved_gib", "kv_capacity_gain_x",
                                                      "accuracy_drop", "tolerance")} | {
         "bf16": {k: r["bf16"][k] for k in ("weights", "accuracy", "weights_file_gib",

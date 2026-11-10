@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1040 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="budget-title budget-desc" id="d-01-gpu-memory-budget-root">
+        <title id="budget-title">Presupuesto de memoria de una L4 con vLLM</title>
+        <desc id="budget-desc">Tres barras de 22.03 GiB. Gemma 4 E4B en bf16 deja 3.43 GiB de KV-cache, en int4 deja 7.30 GiB y Qwen 3.5 4B deja 9.34 GiB.</desc>
+  <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #d-01-gpu-memory-budget-root { font-family: 'Geist', system-ui, sans-serif; color: #0F2547; }
+      #d-01-gpu-memory-budget-root .diagram-container { width: 100%; overflow-x: auto; }</style>
+  </defs>
+        <rect width="1040" height="440" fill="#F7F6F2"/>
+        <text x="40" y="46" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Una L4 de 24 GB, que vLLM ve como 22.03 GiB, con gpu-memory-utilization 0.92</text>
+        <text x="40" y="100" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Gemma 4 E4B, bf16</text>
+        <text x="40" y="116" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">14.89 GiB de pesos en el archivo</text>
+        <rect x="270" y="84" width="507.54" height="34" rx="2" fill="#0f2547" fill-opacity="0.10" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="278" y="105" fill="#0F2547" font-size="10" font-weight="600" font-family="'Geist Mono', monospace">pesos y CUDA 15.38</text>
+        <rect x="777.54" y="84" width="48.18" height="34" rx="2" fill="#3b5b8c" fill-opacity="0.28" stroke="#3B5B8C" stroke-width="1"/>
+        <rect x="825.7199999999999" y="84" width="113.19000000000001" height="34" rx="2" fill="#c59216" fill-opacity="0.18" stroke="#C59216" stroke-width="1"/>
+        <text x="833.7199999999999" y="105" fill="#9A6F0B" font-size="10" font-weight="600" font-family="'Geist Mono', monospace">KV-cache 3.43</text>
+        <rect x="938.91" y="84" width="58.080000000000005" height="34" rx="2" fill="#0f2547" fill-opacity="0.04" stroke="#0f2547" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="801.63" y="136" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">1.46</text>
+        <text x="40" y="188" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Gemma 4 E4B, int4</text>
+        <text x="40" y="204" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">10.72 GiB de pesos en el archivo</text>
+        <rect x="270" y="172" width="377.84999999999997" height="34" rx="2" fill="#0f2547" fill-opacity="0.10" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="278" y="193" fill="#0F2547" font-size="10" font-weight="600" font-family="'Geist Mono', monospace">pesos y CUDA 11.45</text>
+        <rect x="647.8499999999999" y="172" width="50.160000000000004" height="34" rx="2" fill="#3b5b8c" fill-opacity="0.28" stroke="#3B5B8C" stroke-width="1"/>
+        <rect x="698.0099999999999" y="172" width="240.9" height="34" rx="2" fill="#c59216" fill-opacity="0.18" stroke="#C59216" stroke-width="1"/>
+        <text x="706.0099999999999" y="193" fill="#9A6F0B" font-size="10" font-weight="600" font-family="'Geist Mono', monospace">KV-cache 7.3</text>
+        <rect x="938.9099999999999" y="172" width="58.080000000000084" height="34" rx="2" fill="#0f2547" fill-opacity="0.04" stroke="#0f2547" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="672.93" y="224" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">1.52</text>
+        <text x="40" y="276" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Qwen 3.5 4B, bf16</text>
+        <text x="40" y="292" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">8.68 GiB de pesos en el archivo</text>
+        <rect x="270" y="260" width="292.71" height="34" rx="2" fill="#0f2547" fill-opacity="0.10" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="278" y="281" fill="#0F2547" font-size="10" font-weight="600" font-family="'Geist Mono', monospace">pesos y CUDA 8.87</text>
+        <rect x="562.71" y="260" width="67.98" height="34" rx="2" fill="#3b5b8c" fill-opacity="0.28" stroke="#3B5B8C" stroke-width="1"/>
+        <rect x="630.69" y="260" width="308.21999999999997" height="34" rx="2" fill="#c59216" fill-opacity="0.18" stroke="#C59216" stroke-width="1"/>
+        <text x="638.69" y="281" fill="#9A6F0B" font-size="10" font-weight="600" font-family="'Geist Mono', monospace">KV-cache 9.34</text>
+        <rect x="938.9100000000001" y="260" width="58.080000000000055" height="34" rx="2" fill="#0f2547" fill-opacity="0.04" stroke="#0f2547" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="596.7" y="312" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">2.06</text>
+        <line x1="938.91" y1="70" x2="938.91" y2="304" stroke="#C59216" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="944.91" y="66" fill="#9A6F0B" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">presupuesto 20.27</text>
+        <text x="40" y="382" fill="#3B5B8C" font-size="14" font-weight="400" font-family="'Instrument Serif', serif" font-style="italic">Lo que decide cuántos usuarios caben es la franja dorada, y los pesos son los que la achican.</text>
+        <line x1="40" y1="404" x2="1000" y2="404" stroke="#0f2547" stroke-opacity="0.10" stroke-width="0.8"/>
+        <text x="40" y="422" fill="#3B5B8C" font-size="8" font-weight="400" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <rect x="120" y="414" width="12" height="10" rx="3" fill="#3b5b8c" fill-opacity="0.28" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="138" y="422" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">activaciones, el pico de una pasada</text>
+        <rect x="360" y="414" width="12" height="10" rx="3" fill="#0f2547" fill-opacity="0.04" stroke="#0f2547" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="378" y="422" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">fuera del presupuesto</text>
+        <text x="560" y="422" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">GiB medidos en el log de arranque de vLLM 0.33.0, una L4</text>
+      </svg>

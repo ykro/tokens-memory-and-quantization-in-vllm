@@ -78,8 +78,8 @@ def tokenize(base_url: str, model: str, text: str) -> int:
 def kv_cache_info(base_url: str) -> dict | None:
     """Reads vllm:cache_config_info from /metrics: block_size, num_gpu_blocks and friends.
 
-    capacity_tokens = num_gpu_blocks x block_size is how many tokens of KV-cache vLLM
-    reserved after loading the weights. Returns None if the metric is missing.
+    capacity_tokens is how many tokens of KV-cache vLLM says it can hold after loading the
+    weights (kv_cache_size_tokens; num_gpu_blocks x block_size when that label is missing). Returns None if the metric is missing.
     """
     text = get_text(root_of(base_url) + "/metrics", timeout=60)
     for line in text.splitlines():
@@ -87,10 +87,19 @@ def kv_cache_info(base_url: str) -> dict | None:
             labels = dict(re.findall(r'(\w+)="([^"]*)"', line))
             blocks = int(labels.get("num_gpu_blocks") or 0)
             size = int(labels.get("block_size") or 0)
+            # vLLM 0.33 publishes its own token capacity (kv_cache_size_tokens, the same number
+            # as "GPU KV cache size" in its startup log). With the hybrid allocator Gemma 4
+            # uses, num_gpu_blocks x block_size counts blocks of every layer group and
+            # overstates it (about 2.4x for E4B), so prefer the published one.
+            published = labels.get("kv_cache_size_tokens")
+            published = int(published) if published and published.isdigit() else None
+            conc = labels.get("kv_cache_max_concurrency")
             return {
                 "num_gpu_blocks": blocks,
                 "block_size": size,
-                "capacity_tokens": blocks * size,
+                "blocks_x_block_size": blocks * size,
+                "capacity_tokens": published or blocks * size,
+                "max_concurrency_at_max_model_len": round(float(conc), 2) if conc else None,
                 "gpu_memory_utilization": labels.get("gpu_memory_utilization"),
                 "cache_dtype": labels.get("cache_dtype"),
             }

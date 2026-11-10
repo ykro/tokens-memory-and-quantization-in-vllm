@@ -1,0 +1,448 @@
+{
+  "generated_at": "2026-11-10T22:22:43+00:00",
+  "vllm_version": "0.33.0",
+  "experiments": {
+    "01_weights_math": {
+      "checked": "2026-11-10",
+      "gpu": {
+        "card_gb": 24,
+        "usable_gib": 22.03,
+        "budget_gib": 20.27,
+        "gpu_memory_utilization": 0.92
+      },
+      "reserved_besides_weights_gib": 1.95,
+      "served_weights": "/models/google/gemma-4-E4B-it",
+      "rows": [
+        {
+          "id": "Qwen/Qwen3.5-4B",
+          "params_b": 4.66,
+          "bf16_gib": 8.68,
+          "bf16_kv_room_gib": 9.64,
+          "fp8_gib": 4.34,
+          "fp8_kv_room_gib": 13.98,
+          "int4_gib": 2.17,
+          "int4_kv_room_gib": 16.15,
+          "fits_l4": {
+            "bf16": true,
+            "fp8": true,
+            "int4": true
+          },
+          "served_now": false
+        },
+        {
+          "id": "google/gemma-4-E2B-it",
+          "params_b": 5.12,
+          "bf16_gib": 9.54,
+          "bf16_kv_room_gib": 8.78,
+          "fp8_gib": 4.77,
+          "fp8_kv_room_gib": 13.55,
+          "int4_gib": 2.39,
+          "int4_kv_room_gib": 15.93,
+          "fits_l4": {
+            "bf16": true,
+            "fp8": true,
+            "int4": true
+          },
+          "served_now": false
+        },
+        {
+          "id": "google/gemma-4-E4B-it",
+          "params_b": 8.0,
+          "bf16_gib": 14.89,
+          "bf16_kv_room_gib": 3.43,
+          "fp8_gib": 7.45,
+          "fp8_kv_room_gib": 10.87,
+          "int4_gib": 3.72,
+          "int4_kv_room_gib": 14.6,
+          "fits_l4": {
+            "bf16": true,
+            "fp8": true,
+            "int4": true
+          },
+          "served_now": true
+        },
+        {
+          "id": "google/gemma-4-12B-it",
+          "params_b": 11.96,
+          "bf16_gib": 22.28,
+          "bf16_kv_room_gib": -3.96,
+          "fp8_gib": 11.14,
+          "fp8_kv_room_gib": 7.18,
+          "int4_gib": 5.57,
+          "int4_kv_room_gib": 12.75,
+          "fits_l4": {
+            "bf16": false,
+            "fp8": true,
+            "int4": true
+          },
+          "served_now": false
+        },
+        {
+          "id": "google/gemma-4-31B-it",
+          "params_b": 31.27,
+          "bf16_gib": 58.25,
+          "bf16_kv_room_gib": -39.93,
+          "fp8_gib": 29.13,
+          "fp8_kv_room_gib": -10.81,
+          "int4_gib": 14.56,
+          "int4_kv_room_gib": 3.76,
+          "fits_l4": {
+            "bf16": false,
+            "fp8": false,
+            "int4": true
+          },
+          "served_now": false
+        }
+      ],
+      "quantized_checkpoints": [
+        {
+          "id": "google/gemma-4-E4B-it-qat-w4a16-ct",
+          "file_gib": 10.72,
+          "bf16_file_gib": 14.89,
+          "pure_int4_math_gib": 3.72,
+          "saved_vs_bf16": 0.28
+        },
+        {
+          "id": "google/gemma-4-12B-it-qat-w4a16-ct",
+          "file_gib": 9.56,
+          "bf16_file_gib": 22.28,
+          "pure_int4_math_gib": 5.57,
+          "saved_vs_bf16": 0.57
+        }
+      ]
+    },
+    "02_kv_cache_per_token": {
+      "measured_e4b_budget": {
+        "model": "google/gemma-4-E4B-it",
+        "dtype": "bf16",
+        "vllm": "0.33.0",
+        "usable_gib": 22.03,
+        "gpu_memory_utilization": 0.92,
+        "budget_gib": 20.27,
+        "weights_and_non_torch_gib": 15.38,
+        "peak_activation_gib": 1.46,
+        "kv_cache_gib": 3.43
+      },
+      "rows": [
+        {
+          "id": "google/gemma-4-E2B-it",
+          "layers": 35,
+          "kv_heads": 1,
+          "head_dim": 256,
+          "layers_with_growing_cache": 3,
+          "layers_with_window": 12,
+          "layers_shared_or_linear": 20,
+          "sliding_window": 512,
+          "naive_kib_per_token": 35.0,
+          "real_kib_per_token": 6.0,
+          "window_mib_per_request": 6.0,
+          "kv_room_gib_bf16": 8.78,
+          "tokens_fit_naive": 262963,
+          "tokens_fit_real": 1532926
+        },
+        {
+          "id": "google/gemma-4-E4B-it",
+          "layers": 42,
+          "kv_heads": 2,
+          "head_dim": 256,
+          "layers_with_growing_cache": 4,
+          "layers_with_window": 20,
+          "layers_shared_or_linear": 18,
+          "sliding_window": 512,
+          "naive_kib_per_token": 84.0,
+          "real_kib_per_token": 16.0,
+          "window_mib_per_request": 20.0,
+          "kv_room_gib_bf16": 3.43,
+          "tokens_fit_naive": 42766,
+          "tokens_fit_real": 223246
+        },
+        {
+          "id": "google/gemma-4-12B-it",
+          "layers": 48,
+          "kv_heads": 8,
+          "head_dim": 256,
+          "layers_with_growing_cache": 8,
+          "layers_with_window": 40,
+          "layers_shared_or_linear": 0,
+          "sliding_window": 1024,
+          "naive_kib_per_token": 384.0,
+          "real_kib_per_token": 8.0,
+          "window_mib_per_request": 320.0,
+          "kv_room_gib_bf16": -3.96,
+          "tokens_fit_naive": 0,
+          "tokens_fit_real": 0
+        },
+        {
+          "id": "google/gemma-4-31B-it",
+          "layers": 60,
+          "kv_heads": 16,
+          "head_dim": 256,
+          "layers_with_growing_cache": 10,
+          "layers_with_window": 50,
+          "layers_shared_or_linear": 0,
+          "sliding_window": 1024,
+          "naive_kib_per_token": 960.0,
+          "real_kib_per_token": 40.0,
+          "window_mib_per_request": 800.0,
+          "kv_room_gib_bf16": -39.93,
+          "tokens_fit_naive": 0,
+          "tokens_fit_real": 0
+        },
+        {
+          "id": "Qwen/Qwen3.5-4B",
+          "layers": 32,
+          "kv_heads": 4,
+          "head_dim": 256,
+          "layers_with_growing_cache": 8,
+          "layers_with_window": 0,
+          "layers_shared_or_linear": 24,
+          "sliding_window": 0,
+          "naive_kib_per_token": 128.0,
+          "real_kib_per_token": 32.0,
+          "window_mib_per_request": 0.0,
+          "kv_room_gib_bf16": 9.64,
+          "tokens_fit_naive": 78973,
+          "tokens_fit_real": 315894
+        }
+      ],
+      "vllm_kv_cache": {
+        "num_gpu_blocks": 14064,
+        "block_size": 16,
+        "blocks_x_block_size": 225024,
+        "capacity_tokens": 93138,
+        "max_concurrency_at_max_model_len": 11.37,
+        "gpu_memory_utilization": "0.92",
+        "cache_dtype": "auto",
+        "estimate_tokens": 223508,
+        "estimate_tokens_naive": 42816,
+        "estimate_over_vllm_x": 2.4,
+        "served_weights": "google/gemma-4-E4B-it",
+        "max_model_len": 8192
+      }
+    },
+    "03_max_model_len_tradeoff": {
+      "model": "google/gemma-4-E4B-it",
+      "kv_pool_gib": 3.43,
+      "vllm_capacity_tokens": 93138,
+      "usd_per_hour": 1.4209,
+      "rows": [
+        {
+          "tokens_per_request": 2048,
+          "mib_per_request_naive": 168.0,
+          "mib_per_request_real": 52.0,
+          "concurrent_naive": 20,
+          "concurrent_real": 67,
+          "usd_per_slot_hour_real": 0.0212,
+          "concurrent_vllm": 45
+        },
+        {
+          "tokens_per_request": 8192,
+          "mib_per_request_naive": 672.0,
+          "mib_per_request_real": 148.0,
+          "concurrent_naive": 5,
+          "concurrent_real": 23,
+          "usd_per_slot_hour_real": 0.0618,
+          "concurrent_vllm": 11
+        },
+        {
+          "tokens_per_request": 32768,
+          "mib_per_request_naive": 2688.0,
+          "mib_per_request_real": 532.0,
+          "concurrent_naive": 1,
+          "concurrent_real": 6,
+          "usd_per_slot_hour_real": 0.2368,
+          "concurrent_vllm": 2
+        }
+      ]
+    },
+    "04_tokenizer_comparison": {
+      "gemma": {
+        "weights": "/models/google/gemma-4-E4B-it",
+        "es": {
+          "words": 29,
+          "tokens": 38,
+          "tokens_per_word": 1.31,
+          "words_in_8k_context": 6251,
+          "repeatable": true
+        },
+        "en": {
+          "words": 32,
+          "tokens": 36,
+          "tokens_per_word": 1.12,
+          "words_in_8k_context": 7281,
+          "repeatable": true
+        },
+        "code": {
+          "words": 20,
+          "tokens": 56,
+          "tokens_per_word": 2.8,
+          "words_in_8k_context": 2925,
+          "repeatable": true
+        },
+        "es_vs_en_tokens_x": 1.17
+      },
+      "qwen": {
+        "weights": "/models/Qwen/Qwen3.5-4B",
+        "es": {
+          "words": 29,
+          "tokens": 40,
+          "tokens_per_word": 1.38,
+          "words_in_8k_context": 5939,
+          "repeatable": true
+        },
+        "en": {
+          "words": 32,
+          "tokens": 36,
+          "tokens_per_word": 1.12,
+          "words_in_8k_context": 7281,
+          "repeatable": true
+        },
+        "code": {
+          "words": 20,
+          "tokens": 52,
+          "tokens_per_word": 2.6,
+          "words_in_8k_context": 3150,
+          "repeatable": true
+        },
+        "es_vs_en_tokens_x": 1.23
+      },
+      "qwen_vs_gemma_tokens_x": {
+        "es": 1.05,
+        "en": 1.0,
+        "code": 0.93
+      }
+    },
+    "05_quantization_quality": {
+      "bf16": {
+        "weights": "/models/google/gemma-4-E4B-it",
+        "accuracy": 1.0,
+        "weights_file_gib": 14.89,
+        "kv_capacity_tokens": 93138,
+        "answers": [
+          {
+            "question": "¿Cuánto es 17 + 25? Responde solo con el número.",
+            "answer": "42",
+            "ok": true
+          },
+          {
+            "question": "¿Cuál es la capital de Guatemala? Responde solo con el nombre.",
+            "answer": "Ciudad de Guatemala",
+            "ok": true
+          },
+          {
+            "question": "¿Cuántos días tiene una semana? Responde solo con el número.",
+            "answer": "7",
+            "ok": true
+          },
+          {
+            "question": "¿Cuánto es 9 por 8? Responde solo con el número.",
+            "answer": "72",
+            "ok": true
+          },
+          {
+            "question": "¿Qué planeta es conocido como el planeta rojo? Responde con una palabra.",
+            "answer": "Marte",
+            "ok": true
+          },
+          {
+            "question": "¿Cuántos lados tiene un hexágono? Responde solo con el número.",
+            "answer": "6",
+            "ok": true
+          },
+          {
+            "question": "¿Cuál es el símbolo químico del oro? Responde solo con el símbolo.",
+            "answer": "Au",
+            "ok": true
+          },
+          {
+            "question": "¿Cuánto es 100 dividido entre 4? Responde solo con el número.",
+            "answer": "25",
+            "ok": true
+          },
+          {
+            "question": "¿Qué lenguaje de programación usa la palabra def para definir funciones? Responde con una palabra.",
+            "answer": "Python",
+            "ok": true
+          },
+          {
+            "question": "¿Cuántos minutos tiene una hora? Responde solo con el número.",
+            "answer": "60",
+            "ok": true
+          }
+        ]
+      },
+      "quantized": {
+        "weights": "/models/google/gemma-4-E4B-it-qat-w4a16-ct",
+        "accuracy": 1.0,
+        "weights_file_gib": 10.72,
+        "kv_capacity_tokens": 198111,
+        "answers": [
+          {
+            "question": "¿Cuánto es 17 + 25? Responde solo con el número.",
+            "answer": "42",
+            "ok": true
+          },
+          {
+            "question": "¿Cuál es la capital de Guatemala? Responde solo con el nombre.",
+            "answer": "Ciudad de Guatemala",
+            "ok": true
+          },
+          {
+            "question": "¿Cuántos días tiene una semana? Responde solo con el número.",
+            "answer": "7",
+            "ok": true
+          },
+          {
+            "question": "¿Cuánto es 9 por 8? Responde solo con el número.",
+            "answer": "72",
+            "ok": true
+          },
+          {
+            "question": "¿Qué planeta es conocido como el planeta rojo? Responde con una palabra.",
+            "answer": "Marte",
+            "ok": true
+          },
+          {
+            "question": "¿Cuántos lados tiene un hexágono? Responde solo con el número.",
+            "answer": "6",
+            "ok": true
+          },
+          {
+            "question": "¿Cuál es el símbolo químico del oro? Responde solo con el símbolo.",
+            "answer": "Au",
+            "ok": true
+          },
+          {
+            "question": "¿Cuánto es 100 dividido entre 4? Responde solo con el número.",
+            "answer": "25",
+            "ok": true
+          },
+          {
+            "question": "¿Qué lenguaje de programación usa la palabra def para definir funciones? Responde con una palabra.",
+            "answer": "Python",
+            "ok": true
+          },
+          {
+            "question": "¿Cuántos minutos tiene una hora? Responde solo con el número.",
+            "answer": "60",
+            "ok": true
+          }
+        ]
+      },
+      "extras": [],
+      "weights_saved_gib": 4.17,
+      "kv_capacity_gain_x": 2.13,
+      "accuracy_drop": 0.0,
+      "tolerance": 0.2
+    }
+  },
+  "checks": {
+    "01. Weights grow with params": true,
+    "01. int4 < fp8 < bf16": true,
+    "02. KV-cache per token > 0": true,
+    "03. More context, fewer at once": true,
+    "04. Tokenizer is repeatable": true,
+    "05. Quantized needs less memory": true,
+    "05. Quantized accuracy in tolerance": true
+  }
+}

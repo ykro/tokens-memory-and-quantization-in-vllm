@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contexto contra usuarios · Bar chart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Geist', system-ui, sans-serif; background: #F7F6F2; color: #0F2547;
+           min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2.5rem 2rem; }
+    .frame { max-width: 1120px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow { font-family: 'Geist Mono', monospace; font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em;
+               text-transform: uppercase; color: #3B5B8C; margin-bottom: 0.5rem; }
+    h1 { font-family: 'Instrument Serif', serif; font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 400;
+         letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5rem; }
+    svg { width: 100%; min-width: 1040px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Bar chart · vLLM Field Guide</p>
+    <h1>Con la misma bolsa de KV-cache, más contexto por petición significa menos peticiones a la vez</h1>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1040 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="maxlen-title maxlen-desc">
+        <title id="maxlen-title">Peticiones simultáneas según el largo del contexto</title>
+        <desc id="maxlen-desc">Con 3.43 GiB de KV-cache caben 45 peticiones de 2,048 tokens, 11 de 8,192 o 2 de 32,768, según vLLM. La estimación a partir del config.json da 67, 23 y 6.</desc>
+        <rect width="1040" height="410" fill="#F7F6F2"/>
+        <text x="40" y="50" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">KV-cache disponible, 3.43 GiB = 93,138 tokens según vLLM con max-model-len 8,192</text>
+        <text x="40" y="96" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">2,048 tokens por petición</text>
+        <text x="40" y="112" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">un chat corto</text>
+        <rect x="340" y="80" width="288.0" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="638.0" y="98" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist Mono', monospace">45 a la vez</text>
+        <rect x="340" y="114" width="428.8" height="10" rx="3" fill="rgba(15,37,71,0.04)" stroke="rgba(15,37,71,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="778.8" y="123" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">67 según mi estimación</text>
+        <text x="40" y="180" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">8,192 tokens por petición</text>
+        <text x="40" y="196" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">el contexto de este servidor</text>
+        <rect x="340" y="164" width="70.4" height="26" rx="3" fill="rgba(197,146,22,0.18)" stroke="#C59216" stroke-width="1"/>
+        <text x="420.4" y="182" fill="#9A6F0B" font-size="12" font-weight="600" font-family="'Geist Mono', monospace">11 a la vez</text>
+        <rect x="340" y="198" width="147.20000000000002" height="10" rx="3" fill="rgba(15,37,71,0.04)" stroke="rgba(15,37,71,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="497.20000000000005" y="207" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">23 según mi estimación</text>
+        <text x="40" y="264" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">32,768 tokens por petición</text>
+        <text x="40" y="280" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">un documento largo</text>
+        <rect x="340" y="248" width="12.8" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="362.8" y="266" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist Mono', monospace">2 a la vez</text>
+        <rect x="340" y="282" width="38.400000000000006" height="10" rx="3" fill="rgba(15,37,71,0.04)" stroke="rgba(15,37,71,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="388.4" y="291" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">6 según mi estimación</text>
+        <text x="40" y="350" fill="#3B5B8C" font-size="14" font-weight="400" font-family="'Instrument Serif', serif" font-style="italic">Cuatro veces más contexto por petición, cuatro veces menos usuarios a la vez.</text>
+        <line x1="40" y1="374" x2="1000" y2="374" stroke="rgba(15,37,71,0.10)" stroke-width="0.8"/>
+        <text x="40" y="392" fill="#3B5B8C" font-size="8" font-weight="400" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <rect x="120" y="384" width="12" height="10" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="138" y="392" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">capacidad de vLLM en este servidor ÷ largo de la petición</text>
+        <rect x="400" y="384" width="12" height="10" rx="3" fill="rgba(15,37,71,0.04)" stroke="rgba(15,37,71,0.35)" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="418" y="392" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">mi estimación con el config.json, optimista</text>
+        <text x="700" y="392" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">E4B bf16, L4, max-model-len 8,192</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

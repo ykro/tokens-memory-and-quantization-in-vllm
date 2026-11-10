@@ -53,6 +53,7 @@ def run(base_url: str) -> dict:
         live["estimate_tokens"] = shape.tokens_that_fit(measured["kv_cache_gib"] * memory.GIB)
         live["estimate_tokens_naive"] = shape.tokens_that_fit(
             measured["kv_cache_gib"] * memory.GIB, naive=True)
+        live["estimate_over_vllm_x"] = round(live["estimate_tokens"] / live["capacity_tokens"], 2)
         live["served_weights"] = served["id"]
         live["max_model_len"] = model.get("max_model_len")
     return {"measured_e4b_budget": measured, "rows": rows, "vllm_kv_cache": live}

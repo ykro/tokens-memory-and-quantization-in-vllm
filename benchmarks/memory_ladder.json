@@ -1,0 +1,20 @@
+{
+  "/models/google/gemma-4-E4B-it": {
+    "weights": "/models/google/gemma-4-E4B-it",
+    "accuracy": 1.0,
+    "weights_file_gib": 14.89,
+    "kv_capacity_tokens": 93138
+  },
+  "/models/google/gemma-4-12B-it-qat-w4a16-ct": {
+    "weights": "/models/google/gemma-4-12B-it-qat-w4a16-ct",
+    "accuracy": 1.0,
+    "weights_file_gib": 9.56,
+    "kv_capacity_tokens": 41851
+  },
+  "/models/google/gemma-4-E2B-it": {
+    "weights": "/models/google/gemma-4-E2B-it",
+    "accuracy": 1.0,
+    "weights_file_gib": 9.54,
+    "kv_capacity_tokens": 717880
+  }
+}

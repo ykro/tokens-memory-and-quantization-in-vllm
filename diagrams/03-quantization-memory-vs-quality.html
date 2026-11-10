@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuantización, memoria contra calidad · Comparación</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Geist', system-ui, sans-serif; background: #F7F6F2; color: #0F2547;
+           min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2.5rem 2rem; }
+    .frame { max-width: 1120px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow { font-family: 'Geist Mono', monospace; font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em;
+               text-transform: uppercase; color: #3B5B8C; margin-bottom: 0.5rem; }
+    h1 { font-family: 'Instrument Serif', serif; font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 400;
+         letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5rem; }
+    svg { width: 100%; min-width: 1040px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Comparación · vLLM Field Guide</p>
+    <h1>Cuantizar libera memoria o deja entrar un modelo más grande, y la calidad se mide aparte</h1>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1040 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="quant-title quant-desc">
+        <title id="quant-title">Memoria contra calidad según modelo y cuantización</title>
+        <desc id="quant-desc">Gemma 4 E2B bf16 pesa 9.54 GiB y atiende 87.6 peticiones de 8,192 tokens. E4B bf16 pesa 14.89 y atiende 11.4. E4B int4 pesa 10.72 y atiende 24.2. 12B int4 pesa 9.56 y atiende 5.1. 12B bf16 pesa 22.28 y no cabe en la tarjeta. Los cuatro que arrancan acertaron 10 de 10 preguntas.</desc>
+        <rect width="1040" height="420" fill="#F7F6F2"/>
+        <text x="40" y="46" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Pesos en el archivo (GiB)</text>
+        <text x="600" y="46" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Peticiones de 8,192 tokens a la vez, según vLLM</text>
+        <text x="900" y="46" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Quiz</text>
+        <line x1="473.24" y1="56" x2="473.24" y2="316" stroke="#C59216" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="40" y="87" fill="#0F2547" font-size="12" font-weight="500" font-family="'Geist', sans-serif">Gemma 4 E2B, bf16</text>
+        <rect x="230" y="70" width="114.47999999999999" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="352.48" y="87" fill="#0F2547" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">9.54</text>
+        <rect x="600" y="70" width="150" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="758" y="87" fill="#0F2547" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">87.6</text>
+        <text x="900" y="87" fill="#3B5B8C" font-size="11" font-weight="400" font-family="'Geist Mono', monospace">10/10</text>
+        <text x="40" y="139" fill="#0F2547" font-size="12" font-weight="500" font-family="'Geist', sans-serif">Gemma 4 E4B, bf16</text>
+        <rect x="230" y="122" width="178.68" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="416.68" y="139" fill="#0F2547" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">14.89</text>
+        <rect x="600" y="122" width="57.0" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="665.0" y="139" fill="#0F2547" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">11.4</text>
+        <text x="900" y="139" fill="#3B5B8C" font-size="11" font-weight="400" font-family="'Geist Mono', monospace">10/10</text>
+        <text x="40" y="191" fill="#0F2547" font-size="12" font-weight="500" font-family="'Geist', sans-serif">Gemma 4 E4B, int4</text>
+        <rect x="230" y="174" width="128.64000000000001" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="366.64" y="191" fill="#0F2547" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">10.72</text>
+        <rect x="600" y="174" width="121.0" height="26" rx="3" fill="rgba(15,37,71,0.10)" stroke="#3B5B8C" stroke-width="1"/>
+        <text x="729.0" y="191" fill="#0F2547" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">24.2</text>
+        <text x="900" y="191" fill="#3B5B8C" font-size="11" font-weight="400" font-family="'Geist Mono', monospace">10/10</text>
+        <text x="40" y="243" fill="#9A6F0B" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Gemma 4 12B, int4</text>
+        <rect x="230" y="226" width="114.72" height="26" rx="3" fill="rgba(197,146,22,0.18)" stroke="#C59216" stroke-width="1"/>
+        <text x="352.72" y="243" fill="#9A6F0B" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">9.56</text>
+        <rect x="600" y="226" width="25.5" height="26" rx="3" fill="rgba(197,146,22,0.18)" stroke="#C59216" stroke-width="1"/>
+        <text x="633.5" y="243" fill="#9A6F0B" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">5.1</text>
+        <text x="900" y="243" fill="#3B5B8C" font-size="11" font-weight="400" font-family="'Geist Mono', monospace">10/10</text>
+        <text x="40" y="295" fill="#0F2547" font-size="12" font-weight="500" font-family="'Geist', sans-serif">Gemma 4 12B, bf16</text>
+        <rect x="230" y="278" width="267.36" height="26" rx="3" fill="rgba(15,37,71,0.04)" stroke="rgba(15,37,71,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="238" y="295" fill="#3B5B8C" font-size="11" font-weight="600" font-family="'Geist Mono', monospace">22.28</text>
+        <text x="600" y="295" fill="#3B5B8C" font-size="10" font-weight="400" font-family="'Geist Mono', monospace">22.28 GiB contra 22.03 utilizables</text>
+        <text x="900" y="295" fill="#3B5B8C" font-size="11" font-weight="400" font-family="'Geist Mono', monospace">no cabe</text>
+        <text x="479.24" y="66" fill="#9A6F0B" font-size="9" font-weight="400" font-family="'Geist Mono', monospace">presupuesto</text>
+        <text x="40" y="356" fill="#3B5B8C" font-size="14" font-weight="400" font-family="'Instrument Serif', serif" font-style="italic">El modelo de 12B no cabe en bf16, pero en int4 pesa menos que el de 4B en bf16 y responde igual el quiz.</text>
+        <line x1="40" y1="380" x2="1000" y2="380" stroke="rgba(15,37,71,0.10)" stroke-width="0.8"/>
+        <text x="40" y="398" fill="#3B5B8C" font-size="8" font-weight="400" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <text x="120" y="398" fill="#3B5B8C" font-size="9" font-weight="400" font-family="'Geist', sans-serif">Barras de peticiones recortadas a 30 para E2B, que reporta 87.6</text>
+        <text x="600" y="398" fill="#0F2547" font-size="9" font-weight="400" font-family="'Geist', sans-serif">10 preguntas cerradas, solo detectan caídas grandes</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

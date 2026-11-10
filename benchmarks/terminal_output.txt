@@ -1,0 +1,21 @@
+====================================================================================================
+THE OUTSIDE JUDGE — Tokens, Memory and Quantization in vLLM
+====================================================================================================
+Mode    : live
+Server  : vLLM 0.33.0 | bf16 /models/google/gemma-4-E4B-it | quantized /models/google/gemma-4-E4B-it-qat-w4a16-ct
+GPU     : NVIDIA L4, 22.03 GiB usable, budget 20.27 GiB at 0.92
+Client  : Python 3.12.11 | Darwin arm64
+----------------------------------------------------------------------------------------------------
+Check                                | Measured                       | Result                 | Check
+----------------------------------------------------------------------------------------------------
+01. Weights grow with params         | E4B bf16 14.89 GiB             | int4 3.72 GiB          | PASS
+01. int4 < fp8 < bf16                | 5 models                       | smaller every time     | PASS
+02. KV-cache per token > 0           | E4B 16.0 KiB/token             | vLLM 93,138 tok        | PASS
+03. More context, fewer at once      | 2k/8k/32k                      | 67/23/6 requests       | PASS
+04. Tokenizer is repeatable          | es 1.31 en 1.12 tok/word       | Qwen es 1.38 tok/word  | PASS
+05. Quantized needs less memory      | 14.89 -> 10.72 GiB             | KV x2.13               | PASS
+05. Quantized accuracy in tolerance  | bf16 100% int4 100%            | drop 0% <= 20%         | PASS
+----------------------------------------------------------------------------------------------------
+Model sizes from the Hugging Face API, checked 2026-11-10.
+Concurrency counts KV-cache only; vLLM also caps running requests (max_num_seqs).
+ALL CHECKS PASSED.

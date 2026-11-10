@@ -33,11 +33,13 @@ Para no releer todo el prompt en cada paso del decode, el modelo guarda una *key
 bytes por token = 2 x capas x kv_heads x head_dim x 2 bytes (bf16)
 ```
 
-Para Gemma 4 E4B da 84 KiB por token. Gemma 4 paga bastante menos gracias a tres trucos de arquitectura que el código lee de cada `config.json`. Las capas de ventana deslizante solo recuerdan los últimos 512 tokens, así que su cache deja de crecer. Las últimas 18 capas reutilizan el cache de capas anteriores. Solo 4 capas de atención global siguen creciendo con cada token, a 16 KiB por token. Qwen 3.5 usa otro truco: 3 de cada 4 capas usan atención lineal, con un resumen de tamaño fijo por petición.
+Para Gemma 4 E4B da 84 KiB por token. Gemma 4 promete pagar bastante menos gracias a tres trucos de arquitectura que el código lee de cada `config.json`. Las capas de ventana deslizante solo recuerdan los últimos 512 tokens, así que su cache deja de crecer. Las últimas 18 capas reutilizan el cache de capas anteriores. Solo 4 capas de atención global siguen creciendo con cada token, a 16 KiB por token. Qwen 3.5 usa otro truco: 3 de cada 4 capas usan atención lineal, con un resumen de tamaño fijo por petición.
+
+La cuenta de libro, sin embargo, resultó optimista. Con esos 3.43 GiB mi estimación decía unos 223,500 tokens, y vLLM reporta **93,138 tokens** (y 11.37 peticiones simultáneas de 8,192 tokens). El número del servidor es el que vale: lo publica en `/metrics` como `kv_cache_size_tokens` y en su log de arranque. Además cambia con `--max-model-len`, porque vLLM reparte el cache en grupos de capas, y con `--max-model-len 131072` el mismo cache de 3.43 GiB se reporta como 206,728 tokens (1.58 peticiones de 131,072 tokens).
 
 ### 3. Contexto largo o muchos usuarios, el trade-off de `--max-model-len`
 
-El KV-cache es una sola bolsa. Cada petición activa toma de ella en proporción a su largo (prompt más respuesta). Con la misma bolsa caben muchas peticiones de 2k tokens o pocas de 32k. `--max-model-len` es la promesa de aceptar peticiones hasta ese largo; vLLM no arranca si la bolsa no alcanza ni para una, y cuando se llena, las peticiones nuevas esperan en cola.
+El KV-cache es una sola bolsa. Cada petición activa toma de ella en proporción a su largo (prompt más respuesta). Con la misma bolsa caben muchas peticiones de 2k tokens o pocas de 32k. `--max-model-len` es la promesa de aceptar peticiones hasta ese largo; vLLM no arranca si la bolsa no alcanza ni para una, y cuando se llena, las peticiones nuevas esperan en cola. Medido: con `--max-model-len 131072` y `--gpu-memory-utilization 0.82`, vLLM se detuvo con `2.18 GiB KV cache is needed, which is larger than the available KV cache memory (1.23 GiB)` y sugirió un máximo de 69,008 tokens (`benchmarks/does_not_fit.txt`).
 
 ### 4. La cuantización libera memoria, y hay que medir cuánta calidad cuesta
 
@@ -108,27 +110,45 @@ make deploy-qwen && make tunnel-qwen
 make verify-live QWEN_BASE_URL=http://localhost:8002/v1
 ```
 
-Al terminar, `make teardown` borra los tres servicios. Con `min-instances 0` un servicio sin tráfico no cobra GPU, pero borrarlo es la única forma de estar seguro.
+Para alinear más modelos en el experimento 05 (cada uno ocupa otra L4 mientras está despierto), despliega `make deploy-e2b` o `make deploy-12b`, abre su túnel y pásalos como `EXTRA_ARGS="--extra-base-url http://localhost:8003/v1"`; cada corrida los suma a `benchmarks/memory_ladder.json`. Para ver el error de un contexto que no cabe, `make deploy-toolong` (131,072 tokens con `--gpu-memory-utilization 0.82`): el despliegue falla a propósito y el motivo queda en el log del servicio.
+
+Al terminar, `make teardown` borra todos los servicios de la unidad. Con `min-instances 0` un servicio sin tráfico no cobra GPU, pero borrarlo es la única forma de estar seguro.
 
 ---
 
 ## Resultados
 
-**Pendiente de la corrida en vivo.** Esta sección se llena con la salida de `make verify-live` contra los dos servidores en Cloud Run. Las cifras de la tabla del modelo mental (22.03, 20.27, 15.38, 1.46 y 3.43 GiB) ya son mediciones del servidor real; lo que falta es la capacidad de KV-cache que reporta vLLM en `/metrics` para bf16 e int4, el conteo real de tokens del tokenizador y la exactitud de las 10 preguntas.
+Corrida en vivo del 2026-11-10 con `make verify-live QWEN_BASE_URL=http://localhost:8002/v1` (vLLM 0.33.0, una NVIDIA L4 de Cloud Run en `us-east4` por servicio, pesos desde un bucket). Todo queda en `benchmarks/latest_results.json`, `benchmarks/terminal_output.txt`, `benchmarks/memory_ladder.json` y `benchmarks/does_not_fit.txt`. El juez pasa los 7 checks.
 
-Lo que el juez verifica, en cualquier modo:
+### Memoria de la GPU, del log de arranque de vLLM
 
-- Los pesos crecen con el número de parámetros, e int4 pesa menos que fp8 y fp8 menos que bf16.
-- El KV-cache por token es mayor que cero en todos los modelos, y vLLM reporta capacidad.
-- Con más contexto por petición caben menos peticiones a la vez.
-- El tokenizador da el mismo conteo para el mismo texto.
-- El modelo cuantizado ocupa menos memoria de pesos y deja más KV-cache.
-- La exactitud del modelo cuantizado cae como mucho 2 de 10 preguntas respecto a bf16.
+La L4 reporta 22.03 GiB utilizables; con `--gpu-memory-utilization 0.92` el presupuesto es 20.27 GiB.
+
+| Servidor | Pesos y CUDA | Activaciones | KV-cache | Tokens en el KV-cache | Peticiones de 8,192 a la vez |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Gemma 4 E2B, bf16 | 10.12 GiB | 1.40 GiB | 8.76 GiB | 717,880 | 87.6 |
+| **Gemma 4 E4B, bf16** | 15.38 GiB | 1.46 GiB | **3.43 GiB** | 93,138 | 11.4 |
+| Gemma 4 E4B, int4 (`qat-w4a16-ct`) | 11.45 GiB | 1.52 GiB | **7.30 GiB** | 198,111 | 24.2 |
+| Gemma 4 12B, int4 (`qat-w4a16-ct`) | 8.69 GiB | 1.54 GiB | 10.04 GiB | 41,851 | 5.1 |
+| Qwen 3.5 4B, bf16 | 8.87 GiB | 2.06 GiB | 9.34 GiB | 215,598 | 26.3 |
+
+Gemma 4 12B en bf16 pesa 22.28 GiB, más que los 22.03 GiB utilizables: no cabe (cuenta, no se desplegó).
+
+### Los cinco experimentos
+
+| Experimento | Resultado en L4 |
+| :--- | :--- |
+| **01. Pesos** | E4B bf16 14.89 GiB, fp8 7.45, int4 3.72. 12B bf16 22.28 GiB y 31B 58.25 GiB no caben. El checkpoint int4 de Google de E4B pesa 10.72 GiB (no 3.72, porque embeddings y encoders siguen en bf16) |
+| **02. KV-cache por token** | Fórmula de libro 84 KiB por token; con la arquitectura 16 KiB por token más una ventana de 20 MiB por petición. vLLM: 93,138 tokens, contra 223,508 de la estimación (2.4 veces menos) |
+| **03. `max-model-len`** | Con 93,138 tokens de capacidad caben 45, 11 y 2 peticiones de 2,048, 8,192 y 32,768 tokens (la estimación daba 67, 23 y 6) |
+| **04. Tokenizador** | Gemma: español 1.31, inglés 1.12, código 2.80 tokens por palabra (español 1.17 veces el inglés). Qwen: 1.38, 1.12 y 2.60. En 8,192 tokens caben 6,251 palabras en español y 7,281 en inglés con Gemma |
+| **05. Cuantización** | Los pesos bajan 4.17 GiB (14.89 a 10.72), el KV-cache sube 2.13 veces (93,138 a 198,111 tokens) y las 10 preguntas siguen en 10 de 10 con bf16, int4, E2B y 12B int4 |
 
 ### Cómo leer estas cifras
 
 - **GB contra GiB.** Las tarjetas se venden en GB (10⁹ bytes) y vLLM reporta en GiB (2³⁰ bytes). 24 GB son 22.35 GiB.
 - **Estimación contra medición.** Los experimentos 02 y 03 calculan a partir de cada `config.json` y del presupuesto medido de E4B. Para los demás modelos suponen el mismo pico de activaciones (1.46 GiB) y la misma memoria fuera de PyTorch (0.49 GiB). La capacidad que reporta vLLM en `/metrics` es la referencia.
+- **Capacidad contra estimación.** La capacidad en tokens del servidor depende de `--max-model-len` (93,138 tokens a 8,192 y 206,728 a 131,072 con el mismo cache). Las filas de 2k y 32k del experimento 03 dividen la capacidad del servidor entre el largo de la petición, así que son una aproximación; la de 8,192 es la que publica vLLM (`kv_cache_max_concurrency`).
 - **Concurrencia.** El experimento 03 cuenta solo el KV-cache. vLLM además limita las peticiones activas con `--max-num-seqs`, y el servidor de la serie arranca con `--max-model-len 8192`, así que la fila de 32k es una pregunta de diseño (qué pasaría si subieras ese límite).
 - **Diez preguntas.** Detectan caídas grandes de calidad. Para tu aplicación, evalúa con tus propios datos.
 
@@ -141,7 +161,12 @@ Lo que el juez verifica, en cualquier modo:
 ├── benchmarks/
 │   ├── configs/                      # config.json de cada modelo, descargado de Hugging Face
 │   ├── models.json                   # parámetros y tamaño en disco, con fecha de consulta
+│   ├── latest_results.json           # lo escribe make verify-live
+│   ├── terminal_output.txt           # salida del juez en vivo
+│   ├── memory_ladder.json            # E2B, E4B y 12B int4 en el mismo quiz
+│   ├── does_not_fit.txt              # el error de vLLM con un contexto que no cabe
 │   └── pricing.json                  # precio por hora de la instancia de Cloud Run con L4
+├── diagrams/                         # 3 diagramas blue-gold (html, svg, png)
 ├── experiments/
 │   ├── 01_weights_math.py            # parámetros x bytes por dtype contra una L4
 │   ├── 02_kv_cache_per_token.py      # KV-cache por token y cuántos tokens caben
