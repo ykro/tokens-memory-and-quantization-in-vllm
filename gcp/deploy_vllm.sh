@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Deploys the official vLLM image on Cloud Run with one NVIDIA L4 GPU, for any model.
 # On-demand: min-instances 0, so the GPU is billed only while a request keeps it awake.
-# C2 runs two services side by side, the bf16 model and its int4 version:
+# This unit runs two services side by side, the bf16 model and its int4 version:
 #
 #   GCP_PROJECT_ID=my-project bash gcp/deploy_vllm.sh google/gemma-4-E4B-it vllm-gemma
 #   GCP_PROJECT_ID=my-project bash gcp/deploy_vllm.sh \

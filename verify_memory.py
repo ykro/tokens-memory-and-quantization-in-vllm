@@ -1,4 +1,4 @@
-"""The Outside Judge for C2: runs the five experiments once and checks what must hold.
+"""The Outside Judge for tokens, memory and quantization: runs the five experiments once and checks what must hold.
 
     python verify_memory.py          # live vLLM through the tunnels (real numbers)
     python verify_memory.py --mock   # fake servers, checks the logic without a GPU

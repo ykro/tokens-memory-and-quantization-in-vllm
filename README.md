@@ -5,7 +5,7 @@
 - **Por qué es relevante.** La primera vez que levantas un modelo propio, la cuenta mental suele ser «4 mil millones de parámetros, 2 bytes cada uno, 8 GB, sobra espacio en una GPU de 24 GB». Después vLLM arranca, reserva casi toda la tarjeta y te dice que solo caben unas cuantas peticiones largas a la vez. Este repo hace la cuenta completa con números reales: pesos, activaciones, KV-cache, tokens y cuantización.
 - **Para quién es.** Para quien sabe Python y ya llamó alguna API de IA (OpenAI, Gemini, Claude), pero nunca sirvió un modelo propio. No necesitas saber de machine learning, JAX ni PyTorch.
 - **Quién debería verlo.** Quien tiene que decidir qué GPU pedir, qué modelo cabe en ella, cuánto contexto prometer a sus usuarios o si vale la pena una versión cuantizada.
-- **Serie completa.** Unidad C2 de la Serie C, servir modelos abiertos con vLLM. Viene después de [C1, tu primer servidor vLLM con Gemma](https://github.com/ykro/first-vllm-server-with-gemma) y usa el mismo servidor en Cloud Run.
+- **Serie completa.** Segunda unidad del [vLLM for Software Devs Field Guide](https://github.com/ykro/vllm-for-software-devs-field-guide), servir modelos abiertos con vLLM. Viene después de [Tu primer servidor vLLM con Gemma](https://github.com/ykro/first-vllm-server-with-gemma) y usa el mismo servidor en Cloud Run.
 
 ---
 
