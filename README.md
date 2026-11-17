@@ -101,7 +101,10 @@ Y corre el juez contra los servidores reales:
 ```bash
 make verify-live      # escribe benchmarks/latest_results.json y benchmarks/terminal_output.txt
 make report           # lo mismo, imprimiendo además el resultado crudo de cada experimento
+make report-saved     # reimprime el reporte de la última corrida en vivo, sin servidores ni GPU
 ```
+
+En la fila 03 del juez, `vLLM 45/11/2 at 2k/8k/32k` son las peticiones que caben según la capacidad en tokens que reportó vLLM; `estimate 67/23/6` es la cuenta con el `config.json`, que resultó 2.4 veces optimista.
 
 Para comparar tokenizadores con Qwen, levanta un tercer servicio y pásale su URL al juez:
 
@@ -118,7 +121,7 @@ Al terminar, `make teardown` borra todos los servicios de la unidad. Con `min-in
 
 ## Resultados
 
-Corrida en vivo del 2026-11-10 con `make verify-live QWEN_BASE_URL=http://localhost:8002/v1` (vLLM 0.33.0, una NVIDIA L4 de Cloud Run en `us-east4` por servicio, pesos desde un bucket). Todo queda en `benchmarks/latest_results.json`, `benchmarks/terminal_output.txt`, `benchmarks/memory_ladder.json` y `benchmarks/does_not_fit.txt`. El juez pasa los 7 checks.
+Corrida en vivo del 2026-11-10 con `make verify-live QWEN_BASE_URL=http://localhost:8002/v1` (vLLM 0.33.0, una NVIDIA L4 de Cloud Run en `us-east4` por servicio, pesos desde un bucket). Todo queda en `benchmarks/latest_results.json`, `benchmarks/terminal_output.txt`, `benchmarks/memory_ladder.json` y `benchmarks/does_not_fit.txt`. El juez pasa los 8 checks: los 7 de los cinco experimentos y la escalera de modelos (E2B, E4B, E4B int4 y 12B int4 en el mismo quiz), que lee `benchmarks/memory_ladder.json`.
 
 ### Memoria de la GPU, del log de arranque de vLLM
 
@@ -163,7 +166,7 @@ Gemma 4 12B en bf16 pesa 22.28 GiB, más que los 22.03 GiB utilizables: no cabe 
 │   ├── models.json                   # parámetros y tamaño en disco, con fecha de consulta
 │   ├── latest_results.json           # lo escribe make verify-live
 │   ├── terminal_output.txt           # salida del juez en vivo
-│   ├── memory_ladder.json            # E2B, E4B y 12B int4 en el mismo quiz
+│   ├── memory_ladder.json            # E2B, E4B y 12B int4 en el mismo quiz; el juez lo lee
 │   ├── does_not_fit.txt              # el error de vLLM con un contexto que no cabe
 │   └── pricing.json                  # precio por hora de la instancia de Cloud Run con L4
 ├── diagrams/                         # 3 diagramas blue-gold (html, svg, png)

@@ -436,6 +436,36 @@
       "tolerance": 0.2
     }
   },
+  "ladder": [
+    {
+      "model": "E2B",
+      "weights": "/models/google/gemma-4-E2B-it",
+      "accuracy": 1.0,
+      "weights_file_gib": 9.54,
+      "kv_capacity_tokens": 717880
+    },
+    {
+      "model": "E4B",
+      "weights": "/models/google/gemma-4-E4B-it",
+      "accuracy": 1.0,
+      "weights_file_gib": 14.89,
+      "kv_capacity_tokens": 93138
+    },
+    {
+      "model": "E4B int4",
+      "weights": "/models/google/gemma-4-E4B-it-qat-w4a16-ct",
+      "accuracy": 1.0,
+      "weights_file_gib": 10.72,
+      "kv_capacity_tokens": 198111
+    },
+    {
+      "model": "12B int4",
+      "weights": "/models/google/gemma-4-12B-it-qat-w4a16-ct",
+      "accuracy": 1.0,
+      "weights_file_gib": 9.56,
+      "kv_capacity_tokens": 41851
+    }
+  ],
   "checks": {
     "01. Weights grow with params": true,
     "01. int4 < fp8 < bf16": true,
@@ -443,6 +473,7 @@
     "03. More context, fewer at once": true,
     "04. Tokenizer is repeatable": true,
     "05. Quantized needs less memory": true,
-    "05. Quantized accuracy in tolerance": true
+    "05. Quantized accuracy in tolerance": true,
+    "05. Ladder: same quiz, 4 models": true
   }
 }

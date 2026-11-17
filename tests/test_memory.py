@@ -97,3 +97,18 @@ def test_05_quantized_saves_memory_within_tolerance(servers):
     r = load("05_quantization_quality").run(servers["gemma"], servers["gemma-qat"])
     assert r["weights_saved_gib"] > 0 and r["kv_capacity_gain_x"] > 1
     assert r["accuracy_drop"] <= r["tolerance"]
+
+
+def test_ladder_reads_the_saved_file_and_keeps_real_numbers():
+    import verify_memory
+
+    r5 = {"bf16": {"weights": "/models/google/gemma-4-E4B-it", "accuracy": 1.0,
+                   "weights_file_gib": 1.0, "kv_capacity_tokens": 1},
+          "quantized": {"weights": "/models/google/gemma-4-E4B-it-qat-w4a16-ct", "accuracy": 1.0,
+                        "weights_file_gib": 1.0, "kv_capacity_tokens": 2},
+          "extras": []}
+    ladder = verify_memory.build_ladder(r5)
+    assert [m["model"] for m in ladder] == ["E2B", "E4B", "E4B int4", "12B int4"]
+    # the saved file wins over this run's bf16 server; the run only fills what the file lacks
+    assert ladder[1]["kv_capacity_tokens"] == 93138 and ladder[2]["kv_capacity_tokens"] == 2
+    assert ladder[0]["kv_capacity_tokens"] > ladder[1]["kv_capacity_tokens"] > ladder[3]["kv_capacity_tokens"]

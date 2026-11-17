@@ -7,7 +7,7 @@ QWEN_MODEL ?= Qwen/Qwen3.5-4B
 QWEN_BASE_URL ?=
 EXTRA_ARGS ?=
 
-.PHONY: all verify verify-live report test lint facts deploy deploy-quant deploy-qwen deploy-toolong deploy-12b deploy-e2b \
+.PHONY: all verify verify-live report-saved report test lint facts deploy deploy-quant deploy-qwen deploy-toolong deploy-12b deploy-e2b \
 	stage stage-quant warm cool tunnel tunnel-quant tunnel-qwen teardown mock clean
 
 # No GPU needed: lint, tests and the judge against the built-in mock servers
@@ -18,6 +18,10 @@ verify:
 
 # Real numbers: needs `make tunnel` and `make tunnel-quant` open in other terminals.
 # Add QWEN_BASE_URL=http://localhost:8002/v1 (with `make tunnel-qwen`) to compare tokenizers.
+# Re-prints the live report from benchmarks/latest_results.json and memory_ladder.json (no GPU)
+report-saved:
+	$(PYTHON) verify_memory.py --from-saved
+
 verify-live:
 	$(PYTHON) verify_memory.py $(if $(QWEN_BASE_URL),--qwen-base-url $(QWEN_BASE_URL)) $(EXTRA_ARGS)
 
