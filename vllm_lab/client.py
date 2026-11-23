@@ -17,8 +17,10 @@ import os
 import re
 import time
 import urllib.request
+from typing import TYPE_CHECKING
 
-from openai import OpenAI
+if TYPE_CHECKING:
+    from openai import OpenAI
 
 BASE_URL = os.environ.get("VLLM_BASE_URL", "http://localhost:8000/v1")
 QUANT_BASE_URL = os.environ.get("VLLM_QUANT_BASE_URL", "http://localhost:8001/v1")
@@ -26,6 +28,8 @@ QWEN_BASE_URL = os.environ.get("VLLM_QWEN_BASE_URL")  # optional, only for exper
 
 
 def make_client(base_url: str | None = None) -> OpenAI:
+    from openai import OpenAI
+
     # vLLM ignores the key unless it was started with --api-key; the SDK just needs a string.
     return OpenAI(base_url=base_url or BASE_URL, api_key=os.environ.get("VLLM_API_KEY", "local"))
 

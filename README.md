@@ -5,7 +5,7 @@
 - **Por qué es relevante.** La primera vez que levantas un modelo propio, la cuenta mental suele ser «4 mil millones de parámetros, 2 bytes cada uno, 8 GB, sobra espacio en una GPU de 24 GB». Después vLLM arranca, reserva casi toda la tarjeta y te dice que solo caben unas cuantas peticiones largas a la vez. Este repo hace la cuenta completa con números reales: pesos, activaciones, KV-cache, tokens y cuantización.
 - **Para quién es.** Para quien sabe Python y ya llamó alguna API de IA (OpenAI, Gemini, Claude), pero nunca sirvió un modelo propio. No necesitas saber de machine learning, JAX ni PyTorch.
 - **Quién debería verlo.** Quien tiene que decidir qué GPU pedir, qué modelo cabe en ella, cuánto contexto prometer a sus usuarios o si vale la pena una versión cuantizada.
-- **Serie completa.** Segunda unidad del [vLLM for Software Devs Field Guide](https://github.com/ykro/vllm-for-software-devs-field-guide), servir modelos abiertos con vLLM. Viene después de [Tu primer servidor vLLM con Gemma](https://github.com/ykro/first-vllm-server-with-gemma) y usa el mismo servidor en Cloud Run.
+- **Ruta completa.** Forma parte del [vLLM for Software Devs Field Guide](https://github.com/ykro/vllm-for-software-devs-field-guide), servir modelos abiertos con vLLM. Viene después de [Tu primer servidor vLLM con Gemma](https://github.com/ykro/first-vllm-server-with-gemma) y usa el mismo servidor en Cloud Run.
 
 ---
 
@@ -157,6 +157,30 @@ Gemma 4 12B en bf16 pesa 22.28 GiB, más que los 22.03 GiB utilizables: no cabe 
 
 ---
 
+## Práctica
+
+La carpeta `practica/` contiene los fragmentos cortos del video de práctica, cubiertos junto con sus variantes de «prueba esto» en `tests/test_practica.py`. Todos corren en CPU sin GPU: leen los datos guardados en `benchmarks/` (`models.json`, `configs/`, `latest_results.json` y `does_not_fit.txt`) y hablan con el servidor falso de `vllm_lab/mock_server.py`. Se corren desde la raíz del repositorio con Python 3.11 o más nuevo.
+
+```bash
+python3 -m vllm_lab.mock_server &       # servidores falsos en localhost:8000..8002, en segundo plano
+curl -s localhost:8000/metrics | grep cache_config_info
+
+python3 practica/01_pesos.py            # parámetros reales en GiB (2^30) contra los 22.03 GiB de la L4
+python3 practica/02_kv_roto.py          # falla a propósito: 131,072 tokens con utilización 0.82 pide 2.18 GiB y solo quedan 1.23 GiB
+cat benchmarks/does_not_fit.txt         # el mismo ValueError medido en la L4 real
+python3 practica/02_kv_presupuesto.py   # con utilización 0.92 quedan 3.43 GiB de KV-cache y sí arranca
+python3 practica/03_concurrencia.py     # conversaciones simultáneas de 2k, 8k y 32k tokens en bf16 (93,138) e int4 (198,111)
+python3 practica/04_tokenizar.py        # POST /tokenize en inglés, español y código contra las tasas reales de Gemma
+
+python3 -m venv .venv && source .venv/bin/activate
+python3 -m pip install -e ".[dev]"      # openai, pytest y ruff
+make all                                # ruff, 17 tests y el juez contra los servidores falsos
+cat benchmarks/terminal_output.txt      # el juez medido en la L4 real (2026-11-10)
+kill %1                                 # apaga los servidores falsos
+```
+
+---
+
 ## Estructura del repositorio
 
 ```text
@@ -176,12 +200,19 @@ Gemma 4 12B en bf16 pesa 22.28 GiB, más que los 22.03 GiB utilizables: no cabe 
 │   ├── 03_max_model_len_tradeoff.py  # contexto largo contra peticiones simultáneas
 │   ├── 04_tokenizer_comparison.py    # español, inglés y código por POST /tokenize
 │   └── 05_quantization_quality.py    # bf16 contra int4, memoria contra exactitud
+├── practica/                         # fragmentos cortos del video de práctica (sin GPU)
+│   ├── 01_pesos.py                   # GiB reales de E4B, 12B y el checkpoint int4
+│   ├── 02_kv_roto.py                 # max_model_len 131072 con utilización 0.82 (ValueError)
+│   ├── 02_kv_presupuesto.py          # arreglo en una línea con utilización 0.92
+│   ├── 03_concurrencia.py            # conversaciones simultáneas en bf16 vs int4
+│   └── 04_tokenizar.py               # POST /tokenize en inglés, español y código
 ├── gcp/
 │   ├── deploy_vllm.sh                # un servicio de Cloud Run con L4 por modelo
 │   ├── stage_weights.sh              # pesos de Hugging Face a Cloud Storage, una vez
 │   └── teardown.sh                   # borra los servicios
 ├── tests/
-│   └── test_memory.py                # la aritmética y los cinco experimentos contra el mock
+│   ├── test_memory.py                # la aritmética y los cinco experimentos contra el mock
+│   └── test_practica.py              # los fragmentos de practica/ y sus variantes «prueba esto»
 ├── vllm_lab/
 │   ├── cli.py                        # --mock, URLs de los servidores y salida
 │   ├── client.py                     # SDK de OpenAI, /tokenize y /metrics
